@@ -1,0 +1,51 @@
+<!-- dashboard/templates/dashboard/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Sales Data Visualization</h1>
+
+    <!-- Sales Chart -->
+    <div id="sales-chart"></div>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('/dashboard/api/sales-summary/');
+            const data = await response.json();
+
+            const products = data.map(record => record.product);
+            const totalQuantities = data.map(record => record.total_quantity);
+            const totalRevenue = data.map(record => record.total_revenue);
+
+            const quantityTrace = {
+                x: products,
+                y: totalQuantities,
+                type: 'bar',
+                name: 'Total Quantity Sold'
+            };
+
+            const revenueTrace = {
+                x: products,
+                y: totalRevenue,
+                type: 'bar',
+                name: 'Total Revenue'
+            };
+
+            const layout = {
+                title: 'Sales Data Summary',
+                barmode: 'group'
+            };
+
+            Plotly.newPlot('sales-chart', [quantityTrace, revenueTrace], layout);
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
